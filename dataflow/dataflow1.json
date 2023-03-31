@@ -5,31 +5,61 @@
 		"typeProperties": {
 			"sources": [
 				{
+					"linkedService": {
+						"referenceName": "ls_Ops_dev",
+						"type": "LinkedServiceReference"
+					},
 					"name": "source1"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"name": "sink1"
+				}
+			],
 			"transformations": [
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "surrogateKey1"
+				},
 				{
 					"name": "window1"
 				},
 				{
-					"name": "surrogateKey1"
+					"name": "filter1"
 				}
 			],
 			"scriptLines": [
 				"source(output(",
 				"          year as string,",
-				"          Month as string,",
+				"          Month as short,",
 				"          product as string",
 				"     ),",
+				"     useSchema: false,",
 				"     allowSchemaDrift: true,",
-				"     validateSchema: false) ~> source1",
-				"surrogateKey1 window(asc(KEY, true),",
-				"     year = coalesce(year,lag(year,1,0),year)) ~> window1",
-				"source1 keyGenerate(output(KEY as long),",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: true,",
+				"     format: 'delimited',",
+				"     fileSystem: 'dev',",
+				"     fileName: 'year.csv',",
+				"     columnDelimiter: ',',",
+				"     escapeChar: '\\\\',",
+				"     quoteChar: '\\\"',",
+				"     columnNamesAsHeader: true) ~> source1",
+				"surrogateKey1 derive(CompositeKey = toString(concat(toString(product),'-',year))) ~> derivedColumn1",
+				"source1 keyGenerate(output(SK as long),",
 				"     startAt: 1L,",
-				"     stepValue: 1L) ~> surrogateKey1"
+				"     stepValue: 1L) ~> surrogateKey1",
+				"derivedColumn1 window(over(CompositeKey),",
+				"     asc(SK, true),",
+				"     rowNumber = rowNumber()) ~> window1",
+				"window1 filter(rowNumber==1) ~> filter1",
+				"filter1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
 			]
 		}
 	}
