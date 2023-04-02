@@ -1,0 +1,61 @@
+{
+	"name": "dataflow3",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"linkedService": {
+						"referenceName": "ls_Ops_dev",
+						"type": "LinkedServiceReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "derivedColumn2"
+				},
+				{
+					"name": "flatten1"
+				},
+				{
+					"name": "derivedColumn3"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          startRTV as date,",
+				"          flag as boolean",
+				"     ),",
+				"     useSchema: false,",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'delimited',",
+				"     fileSystem: 'dev',",
+				"     fileName: 'test.csv',",
+				"     columnDelimiter: ',',",
+				"     escapeChar: '\\\\',",
+				"     quoteChar: '\\\"',",
+				"     columnNamesAsHeader: true) ~> source1",
+				"source1 derive(current = currentDate()) ~> derivedColumn1",
+				"derivedColumn1 derive(monthsBW = mapLoop(toInteger(round(monthsBetween(current,startRTV),0,1)),#index)) ~> derivedColumn2",
+				"derivedColumn2 foldDown(unroll(monthsBW),",
+				"     mapColumn(",
+				"          startRTV,",
+				"          flag,",
+				"          current,",
+				"          monthsBW",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> flatten1",
+				"flatten1 derive(Newdate = lastDayOfMonth(addMonths(startRTV,toInteger(monthsBW)-1))) ~> derivedColumn3"
+			]
+		}
+	}
+}
