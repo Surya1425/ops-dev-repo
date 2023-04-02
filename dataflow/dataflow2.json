@@ -47,7 +47,7 @@
 				"     columnNamesAsHeader: true) ~> source1",
 				"source1 derive(current = currentDate()) ~> derivedColumn1",
 				"derivedColumn1 derive(monthsBW = mapLoop(toInteger(round(monthsBetween(current,startRTV),0,1)),#index)) ~> derivedColumn2",
-				"flatten1 derive({WIP Date} = lastDayOfMonth(addMonths(startRTV,toInteger(monthsBW)-1))) ~> derivedColumn3",
+				"flatten1 derive({New Date} = lastDayOfMonth(addMonths(startRTV,toInteger(monthsBW)-1))) ~> derivedColumn3",
 				"derivedColumn2 foldDown(unroll(monthsBW),",
 				"     mapColumn(",
 				"          startRTV,",
