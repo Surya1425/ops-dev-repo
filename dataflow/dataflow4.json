@@ -15,7 +15,7 @@
 			"sinks": [
 				{
 					"linkedService": {
-						"referenceName": "ls_Ops_dev",
+						"referenceName": "opsdevsql",
 						"type": "LinkedServiceReference"
 					},
 					"name": "sink1"
@@ -79,16 +79,19 @@
 				"          {APPROVED_WINS$LOSS_$$$$} = date) ~> derivedColumn1",
 				"derivedColumn1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     format: 'parquet',",
-				"     fileSystem: 'dev',",
-				"     compressionCodec: 'snappy',",
-				"     partitionFileNames:['matches.parquet'],",
-				"     umask: 0022,",
-				"     preCommands: [],",
-				"     postCommands: [],",
+				"     format: 'table',",
+				"     store: 'sqlserver',",
+				"     schemaName: 'ops-dev-schema',",
+				"     tableName: 'testdataTB',",
+				"     insertable: true,",
+				"     updateable: false,",
+				"     deletable: false,",
+				"     upsertable: false,",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     partitionBy('hash', 1)) ~> sink1"
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     preCommands: [],",
+				"     postCommands: []) ~> sink1"
 			]
 		}
 	}
