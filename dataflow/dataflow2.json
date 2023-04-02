@@ -15,10 +15,16 @@
 			"sinks": [],
 			"transformations": [
 				{
-					"name": "aggregate1"
+					"name": "derivedColumn1"
 				},
 				{
-					"name": "select1"
+					"name": "derivedColumn2"
+				},
+				{
+					"name": "derivedColumn3"
+				},
+				{
+					"name": "flatten1"
 				}
 			],
 			"scriptLines": [
@@ -26,9 +32,7 @@
 				"     UniqueRows as string (\"year,product\")",
 				"}",
 				"source(output(",
-				"          year as string,",
-				"          Month as short,",
-				"          product as string",
+				"          startRTV as date",
 				"     ),",
 				"     useSchema: false,",
 				"     allowSchemaDrift: true,",
@@ -36,21 +40,22 @@
 				"     ignoreNoFilesFound: false,",
 				"     format: 'delimited',",
 				"     fileSystem: 'dev',",
-				"     fileName: 'year.csv',",
+				"     fileName: 'test.csv',",
 				"     columnDelimiter: ',',",
 				"     escapeChar: '\\\\',",
 				"     quoteChar: '\\\"',",
 				"     columnNamesAsHeader: true) ~> source1",
-				"source1 aggregate(groupBy(dummy = sha2(256,byNames(split($UniqueRows,',')))),",
-				"     each(match(true()), $$ = first($$))) ~> aggregate1",
-				"aggregate1 select(mapColumn(",
-				"          dummy,",
-				"          year,",
-				"          Month,",
-				"          product",
+				"source1 derive(current = currentDate()) ~> derivedColumn1",
+				"derivedColumn1 derive(monthsBW = mapLoop(toInteger(round(monthsBetween(current,startRTV),0,1)),#index)) ~> derivedColumn2",
+				"flatten1 derive({WIP Date} = lastDayOfMonth(addMonths(startRTV,toInteger(monthsBW)-1))) ~> derivedColumn3",
+				"derivedColumn2 foldDown(unroll(monthsBW),",
+				"     mapColumn(",
+				"          startRTV,",
+				"          current,",
+				"          monthsBW",
 				"     ),",
-				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> select1"
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> flatten1"
 			]
 		}
 	}
