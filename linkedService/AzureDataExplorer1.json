@@ -1,0 +1,15 @@
+{
+	"name": "AzureDataExplorer1",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureDataExplorer",
+		"typeProperties": {
+			"endpoint": "https://adxopsdev.centralindia.kusto.windows.net",
+			"tenant": "7f7764ab-196c-4711-90b6-eeedc3a2dafe",
+			"servicePrincipalId": "aeb05827-0371-4b4b-b111-c326611d681f",
+			"database": "opsdevadxdb",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQDI2Nzc3NTE2LTNGMDctNEU0MS04MUZFLTdDOUM0QjY4MjZCM19jNmU1MTQxYy1hMTUzLTQ0ZjMtODNhNy01MDZlNjQ3Njc1OTQiDQp9"
+		}
+	}
+}
