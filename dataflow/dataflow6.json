@@ -1,0 +1,90 @@
+{
+	"name": "dataflow6",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"linkedService": {
+						"referenceName": "ls_Ops_dev",
+						"type": "LinkedServiceReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"linkedService": {
+						"referenceName": "opsdevsql",
+						"type": "LinkedServiceReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "select1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          id as string,",
+				"          title as string,",
+				"          type as string,",
+				"          description as string,",
+				"          release_year as string,",
+				"          age_certification as string,",
+				"          runtime as string,",
+				"          genres as string,",
+				"          production_countries as string,",
+				"          seasons as double,",
+				"          imdb_id as string,",
+				"          imdb_score as string,",
+				"          imdb_votes as double,",
+				"          tmdb_popularity as string,",
+				"          tmdb_score as double",
+				"     ),",
+				"     useSchema: false,",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'delimited',",
+				"     fileSystem: 'dev',",
+				"     fileName: 'titles.csv',",
+				"     columnDelimiter: ',',",
+				"     escapeChar: '\\\\',",
+				"     quoteChar: '\\\"',",
+				"     columnNamesAsHeader: true) ~> source1",
+				"source1 select(mapColumn(",
+				"          id,",
+				"          title,",
+				"          description,",
+				"          release_year,",
+				"          runtime,",
+				"          genres,",
+				"          seasons,",
+				"          imdb_id,",
+				"          imdb_score,",
+				"          tmdb_popularity,",
+				"          tmdb_score",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'table',",
+				"     store: 'sqlserver',",
+				"     schemaName: 'dbo',",
+				"     tableName: 'titlesTb',",
+				"     insertable: true,",
+				"     updateable: false,",
+				"     deletable: false,",
+				"     upsertable: false,",
+				"     recreate: true,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+			]
+		}
+	}
+}
