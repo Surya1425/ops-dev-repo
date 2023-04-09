@@ -16,8 +16,11 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "dataflow4",
-						"type": "DataFlowReference"
+						"referenceName": "dataflow2",
+						"type": "DataFlowReference",
+						"parameters": {
+							"UniqueRows": "\"year,product\""
+						}
 					},
 					"compute": {
 						"coreCount": 8,
