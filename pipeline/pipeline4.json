@@ -1,0 +1,42 @@
+{
+	"name": "pipeline4",
+	"properties": {
+		"activities": [
+			{
+				"name": "Azure logic app",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://prod-28.eastus.logic.azure.com:443/workflows/376dbf575542453d98c84c35db85db1f/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Yg6iQTTdQ5em2DQbkOFIu9P8IuJScJNPLC0qXXql8NY",
+					"method": "POST",
+					"body": {
+						"value": "{\n    \"to\": \"@{pipeline().parameters.tomail}\",\n    \"subject\": \"@{pipeline().parameters.nameofcustomer} is testing the Az app\",\n    \"body\": \"Testing\",\n    \"Filename\":\"@{pipeline().parameters.filename}\"\n}\n",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"tomail": {
+				"type": "string",
+				"defaultValue": "csuryateja1425@gmail.com"
+			},
+			"nameofcustomer": {
+				"type": "string",
+				"defaultValue": "SuryaChiliveriTeja"
+			},
+			"filename": {
+				"type": "string"
+			}
+		},
+		"annotations": []
+	}
+}
